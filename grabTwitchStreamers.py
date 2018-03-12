@@ -55,7 +55,7 @@ def grabTwitchStreamers(minimumFollowers):
 		r = requests.get(url)
 		jsonObject = r.json()
 		for stream in jsonObject['streams']:
-			if (stream['channel']['followers'] > minimumFollowers):
+			if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] == 'en'):
 				streamers.append(stream)
 		print len(streamers)
 	#return streamers
