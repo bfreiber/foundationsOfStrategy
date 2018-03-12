@@ -629,3 +629,5 @@ def runProgram():
 		writeStreamersToCSV(csvFileName, csvdataRows)
 		print 'Saved ' + twitchName
 	return csvdataRows
+
+runProgram()
