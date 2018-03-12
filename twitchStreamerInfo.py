@@ -27,7 +27,6 @@
 ################ [1a] Twitch information ################
 def readCSV(csvFileName):
 	import csv
-	csvFileName = csvFilePath(csvFileName)
 	csvdataRows = []
 	with open(csvFileName, 'rb') as csvfile:
 		spamreader = csv.reader(csvfile)
@@ -39,7 +38,6 @@ def readCSV(csvFileName):
 
 def writeStreamersToCSV(csvFileName, csvdataRows):
 	import csv
-	csvFileName = csvFilePath(csvFileName)
 	with open(csvFileName, 'wb') as csvfile:
 		spamwriter = csv.writer(csvfile)
 		for row in csvdataRows:
