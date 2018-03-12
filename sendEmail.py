@@ -35,7 +35,7 @@ def sendEmail(fileToSend):
 	from email.mime.image import MIMEImage
 	from email.mime.text import MIMEText
 
-	fileToSend = csvFilePath(fileToSend)
+	#fileToSend = csvFilePath(fileToSend)
 
 	emailfrom = "Endorse team"
 	emailto = "brandon@endorse.gg"
