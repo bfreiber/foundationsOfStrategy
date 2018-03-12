@@ -83,7 +83,10 @@ def grabTwitchStreamers(minimumFollowers):
 			csvdataRows[streamerIndex][8] = streamer['channel']['game'].encode("utf-8")
 		# For streamers not in CSV, append #
 		else:
-			csvdataRows.append([streamer['channel']['name'].encode("utf-8"), streamer['channel']['language'].encode("utf-8"), streamer['channel']['followers'], streamer['channel']['views'], streamer['channel']['created_at'].encode("utf-8"), streamer['channel']['mature'], streamer['channel']['partner'], streamer['channel']['logo'].encode("utf-8"), streamer['channel']['game'].encode("utf-8"), '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+			try:
+				csvdataRows.append([streamer['channel']['name'].encode("utf-8"), streamer['channel']['language'].encode("utf-8"), streamer['channel']['followers'], streamer['channel']['views'], streamer['channel']['created_at'].encode("utf-8"), streamer['channel']['mature'], streamer['channel']['partner'], streamer['channel']['logo'].encode("utf-8"), streamer['channel']['game'].encode("utf-8"), '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+			except:
+				print 'Error with csvdataRows.append'
 	# Write out CSV #
 	csvFileName = 'streamers.csv'
 	csvFileName = csvFilePath(csvFileName)
