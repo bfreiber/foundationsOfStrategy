@@ -54,9 +54,12 @@ def grabTwitchStreamers(minimumFollowers):
 		url = 'https://api.twitch.tv/kraken/streams?limit=100&offset=%s&stream_type=live&client_id=nrisqw9diqmthnvxx1rknb3wxzhwm2k' % offset
 		r = requests.get(url)
 		jsonObject = r.json()
-		for stream in jsonObject['streams']:
-			if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] == 'en'):
-				streamers.append(stream)
+		try:
+			for stream in jsonObject['streams']:
+				if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] == 'en'):
+					streamers.append(stream)
+		except:
+			print "Error with jsonObject['streams']"
 		print len(streamers)
 	#return streamers
 	# [2] Decide which streamer data to save or update
