@@ -628,4 +628,4 @@ def runProgram():
 		print 'Saved ' + twitchName
 	return csvdataRows
 
-#runProgram()
+runProgram()
