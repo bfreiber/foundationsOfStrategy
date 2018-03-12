@@ -1,3 +1,29 @@
+def readCSV(csvFileName):
+	import csv
+	csvdataRows = []
+	with open(csvFileName, 'rb') as csvfile:
+		spamreader = csv.reader(csvfile)
+		#for line in data:
+		for row in spamreader:
+			csvdataRows.append(row)
+	## Return rows #
+	return csvdataRows
+
+def writeStreamersToCSV(csvFileName, csvdataRows):
+	import csv
+	with open(csvFileName, 'wb') as csvfile:
+		spamwriter = csv.writer(csvfile)
+		for row in csvdataRows:
+			spamwriter.writerow(row)
+	return
+
+def csvFilePath(csvFileName):
+	from sys import platform
+	if platform == 'darwin':
+		return csvFileName
+	else:
+		return 'foundationsOfStrategy/' + csvFileName
+
 def sendEmail(fileToSend):
 	import smtplib
 	import mimetypes
