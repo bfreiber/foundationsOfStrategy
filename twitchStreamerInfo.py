@@ -44,7 +44,10 @@ def writeStreamersToCSV(csvFileName, csvdataRows):
 			try:
 				spamwriter.writerow(row)
 			except:
-				print "Error (spam)writing row: " + row
+				try:
+					print "Error (spam)writing row: " + row[0]
+				except:
+					print "Error (spam)writing row"
 	return
 
 def csvFilePath(csvFileName):
