@@ -41,6 +41,9 @@ def writeStreamersToCSV(csvFileName, csvdataRows):
 	with open(csvFileName, 'wb') as csvfile:
 		spamwriter = csv.writer(csvfile)
 		for row in csvdataRows:
+			for item in row:
+				if type(item) == str:
+					item.encode('utf-8')
 			spamwriter.writerow(row)
 	return
 
@@ -632,7 +635,7 @@ def runProgram():
 				#csvFileName = csvFilePath(csvFileName)
 				#writeStreamersToCSV(csvFileName, csvdataRows)
 				count += 1
-				print str(count) + ', Saved' + twitchName
+				print str(count) + ', Saved ' + twitchName
 		except:
 			print 'Error with certain twitchName'
 		# [2] Write to csv
