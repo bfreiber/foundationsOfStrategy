@@ -588,6 +588,7 @@ def runProgram():
 	csvFileName = csvFilePath(csvFileName)
 	csvdataRows = readCSV(csvFileName)
 	# [1] Update each row
+	count = 0
 	for row in csvdataRows[1:]:
 		try:
 			# Define variables
@@ -630,7 +631,8 @@ def runProgram():
 				#csvFileName = 'streamersNew.csv'
 				#csvFileName = csvFilePath(csvFileName)
 				#writeStreamersToCSV(csvFileName, csvdataRows)
-				print 'Saved ' + twitchName
+				count += 1
+				print str(count) + ', Saved' + twitchName
 		except:
 			print 'Error with certain twitchName'
 		# [2] Write to csv
