@@ -95,4 +95,4 @@ def grabTwitchStreamers(minimumFollowers):
 
 ################ Run ################
 
-grabTwitchStreamers(100)
+#grabTwitchStreamers(100)
