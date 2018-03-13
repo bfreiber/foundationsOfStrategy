@@ -65,7 +65,7 @@ def grabTwitchStreamers(minimumFollowers):
 	# [2] Decide which streamer data to save or update
 	# Read in CSV, append new streamers, update? existing streamers #
 	csvFileName = 'streamers.csv'
-	csvFileName = csvFilePath(csvFileName)
+	#csvFileName = csvFilePath(csvFileName)
 	csvdataRows = readCSV(csvFileName)
 	for streamer in streamers:
 		twitchNamesinCSV = [row[0] for row in csvdataRows]
@@ -89,7 +89,7 @@ def grabTwitchStreamers(minimumFollowers):
 				print 'Error with csvdataRows.append'
 	# Write out CSV #
 	csvFileName = 'streamers.csv'
-	csvFileName = csvFilePath(csvFileName)
+	#csvFileName = csvFilePath(csvFileName)
 	writeStreamersToCSV(csvFileName, csvdataRows)
 	return csvdataRows, streamers
 
