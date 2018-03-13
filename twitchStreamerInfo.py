@@ -595,7 +595,7 @@ def runProgram():
 			language = row[1]
 			partner = row[6]
 			# Today - only commence if (language = english) and (partner = True)
-			if (language == 'en') and (partner == "TRUE" or partner == True or partner == "True"):
+			if ((language == 'en') and (partner == "TRUE" or partner == True or partner == "True") and (row[9] == "")):
 				# [1a] Monthly views
 				row[9] = lastMonthsViewsTwinge(twitchName)
 				# [1b] Hours streamed, Average concurrents, Game distribution
