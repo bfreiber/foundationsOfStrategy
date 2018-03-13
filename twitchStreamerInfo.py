@@ -627,12 +627,16 @@ def runProgram():
 				row[16] = cumulativeVideoLength
 				row[17] = totalViews
 				# [2] Write to csv
-				csvFileName = 'streamersNew.csv'
-				csvFileName = csvFilePath(csvFileName)
-				writeStreamersToCSV(csvFileName, csvdataRows)
+				#csvFileName = 'streamersNew.csv'
+				#csvFileName = csvFilePath(csvFileName)
+				#writeStreamersToCSV(csvFileName, csvdataRows)
 				print 'Saved ' + twitchName
 		except:
 			print 'Error with certain twitchName'
+		# [2] Write to csv
+		csvFileName = 'streamersNew.csv'
+		csvFileName = csvFilePath(csvFileName)
+		writeStreamersToCSV(csvFileName, csvdataRows)
 	return csvdataRows
 
 runProgram()
