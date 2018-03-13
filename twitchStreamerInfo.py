@@ -41,10 +41,10 @@ def writeStreamersToCSV(csvFileName, csvdataRows):
 	with open(csvFileName, 'wb') as csvfile:
 		spamwriter = csv.writer(csvfile)
 		for row in csvdataRows:
-			for item in row:
-				if type(item) == str:
-					item.encode('utf-8')
-			spamwriter.writerow(row)
+			try:
+				spamwriter.writerow(row)
+			except:
+				print "Error (spam)writing row: " + row
 	return
 
 def csvFilePath(csvFileName):
