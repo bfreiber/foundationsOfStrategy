@@ -82,7 +82,7 @@ def grabTwitchStreamers(minimumFollowers):
 	#return streamers
 	# [2] Decide which streamer data to save or update
 	# Read in CSV, append new streamers, update? existing streamers #
-	csvFileName = 'streamers.csv'
+	csvFileName = 'streamersNew.csv'
 	csvFileName = csvFilePath(csvFileName)
 	csvdataRows = readCSV(csvFileName)
 	for streamer in streamers:
@@ -103,7 +103,7 @@ def grabTwitchStreamers(minimumFollowers):
 		else:
 			csvdataRows.append([streamer['channel']['name'].encode("utf-8"), streamer['channel']['language'].encode("utf-8"), streamer['channel']['followers'], streamer['channel']['views'], streamer['channel']['created_at'].encode("utf-8"), streamer['channel']['mature'], streamer['channel']['partner'], streamer['channel']['logo'].encode("utf-8"), streamer['channel']['game'].encode("utf-8"), '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
 	# Write out CSV #
-	csvFileName = 'streamers.csv'
+	csvFileName = 'streamersNew.csv'
 	csvFileName = csvFilePath(csvFileName)
 	writeStreamersToCSV(csvFileName, csvdataRows)
 	return csvdataRows, streamers
@@ -584,7 +584,7 @@ def testFunction():
 def runProgram():
 	import json
 	# [0] Read in csv
-	csvFileName = 'streamers.csv'
+	csvFileName = 'streamersNew.csv'
 	csvFileName = csvFilePath(csvFileName)
 	csvdataRows = readCSV(csvFileName)
 	# [1] Update each row
@@ -627,7 +627,7 @@ def runProgram():
 				row[16] = cumulativeVideoLength
 				row[17] = totalViews
 				# [2] Write to csv
-				csvFileName = 'streamers.csv'
+				csvFileName = 'streamersNew.csv'
 				csvFileName = csvFilePath(csvFileName)
 				writeStreamersToCSV(csvFileName, csvdataRows)
 				print 'Saved ' + twitchName
