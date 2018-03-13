@@ -589,17 +589,20 @@ def testFunction():
 
 def runProgram():
 	import json
+	import timeit
 	# [0] Read in csv
 	csvFileName = 'streamersNew.csv'
 	csvFileName = csvFilePath(csvFileName)
 	csvdataRows = readCSV(csvFileName)
 	# [1] Update each row
 	count = 0
+	runStart = timeit.default_timer()
 	for row in csvdataRows[1:]:
-		## 100 rows every 2 hours ##
-		if (count <= 100):
+		## 100 rows every hour ##
+		if (count <= 50):
 			try:
 				# Define variables
+				rowStart = timeit.default_timer()
 				twitchName = row[0]
 				language = row[1]
 				partner = row[6]
@@ -640,7 +643,9 @@ def runProgram():
 					#csvFileName = csvFilePath(csvFileName)
 					#writeStreamersToCSV(csvFileName, csvdataRows)
 					count += 1
-					print str(count) + ', Saved ' + twitchName
+					rowStop = timeit.default_timer()
+					rowTime = rowStop - rowStart
+					print str(count) + ', Saved ' + twitchName + ', Row runtime: ' + str(rowTime)
 			except:
 				print 'Error with certain twitchName'
 			# [2] Write to csv
@@ -648,7 +653,10 @@ def runProgram():
 			csvFileName = csvFilePath(csvFileName)
 			writeStreamersToCSV(csvFileName, csvdataRows)
 		else:
-			print 'Finished 100 updates, with time to spare'
+			print 'Finished 50 updates, with time to spare'
+	runStop = timeit.default_timer()
+	runTime = runStop - runStart
+	print 'Total runtime: ' + str(runTime)
 	return csvdataRows
 
 runProgram()
