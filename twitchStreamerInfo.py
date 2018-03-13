@@ -596,55 +596,59 @@ def runProgram():
 	# [1] Update each row
 	count = 0
 	for row in csvdataRows[1:]:
-		try:
-			# Define variables
-			twitchName = row[0]
-			language = row[1]
-			partner = row[6]
-			# Today - only commence if (language = english) and (partner = True)
-			if ((language == 'en') and (partner == "TRUE" or partner == True or partner == "True") and (row[9] == "")):
-				# [1a] Monthly views
-				row[9] = lastMonthsViewsTwinge(twitchName)
-				# [1b] Hours streamed, Average concurrents, Game distribution
-				games, monthlyHoursStreamed, gamesPlayed, averageConcurrentViewers = gameDistribution(twitchName)
-				row[10] = monthlyHoursStreamed
-				row[11] = averageConcurrentViewers
-				row[18] = gamesPlayed
-				if (len(games) >= 1):
-					row[19] = games[0]['name']
-					row[22] = games[0]['viewersPercentage']
-				if (len(games) >= 2):
-					row[20] = games[1]['name']
-					row[23] = games[1]['viewersPercentage']
-				if (len(games) >= 3):
-					row[21] = games[2]['name']
-					row[24] = games[2]['viewersPercentage']
-				row[25] = json.dumps(games)
-				# [1c] Streamlabs
-				row[12] = usingStreamLabs(twitchName)
-				# [1d] PayPal email
-				if row[12] == True:
-					row[13] = paypalInfo(twitchName)
-				# [1e] Twitch panels email
-				if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue")):
-					row[14] = twitchPanelsEmail(twitchName)
-				# [1f] Video data
-				videoCount, cumulativeVideoLength, totalViews = getLast30DayVideos(twitchName)
-				row[15] = videoCount
-				row[16] = cumulativeVideoLength
-				row[17] = totalViews
-				# [2] Write to csv
-				#csvFileName = 'streamersNew.csv'
-				#csvFileName = csvFilePath(csvFileName)
-				#writeStreamersToCSV(csvFileName, csvdataRows)
-				count += 1
-				print str(count) + ', Saved ' + twitchName
-		except:
-			print 'Error with certain twitchName'
-		# [2] Write to csv
-		csvFileName = 'streamersNew.csv'
-		csvFileName = csvFilePath(csvFileName)
-		writeStreamersToCSV(csvFileName, csvdataRows)
+		## 100 rows every 2 hours ##
+		if (count <= 100):
+			try:
+				# Define variables
+				twitchName = row[0]
+				language = row[1]
+				partner = row[6]
+				# Today - only commence if (language = english) and (partner = True)
+				if ((language == 'en') and (partner == "TRUE" or partner == True or partner == "True") and (row[9] == "")):
+					# [1a] Monthly views
+					row[9] = lastMonthsViewsTwinge(twitchName)
+					# [1b] Hours streamed, Average concurrents, Game distribution
+					games, monthlyHoursStreamed, gamesPlayed, averageConcurrentViewers = gameDistribution(twitchName)
+					row[10] = monthlyHoursStreamed
+					row[11] = averageConcurrentViewers
+					row[18] = gamesPlayed
+					if (len(games) >= 1):
+						row[19] = games[0]['name']
+						row[22] = games[0]['viewersPercentage']
+					if (len(games) >= 2):
+						row[20] = games[1]['name']
+						row[23] = games[1]['viewersPercentage']
+					if (len(games) >= 3):
+						row[21] = games[2]['name']
+						row[24] = games[2]['viewersPercentage']
+					row[25] = json.dumps(games)
+					# [1c] Streamlabs
+					row[12] = usingStreamLabs(twitchName)
+					# [1d] PayPal email
+					if row[12] == True:
+						row[13] = paypalInfo(twitchName)
+					# [1e] Twitch panels email
+					if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue")):
+						row[14] = twitchPanelsEmail(twitchName)
+					# [1f] Video data
+					videoCount, cumulativeVideoLength, totalViews = getLast30DayVideos(twitchName)
+					row[15] = videoCount
+					row[16] = cumulativeVideoLength
+					row[17] = totalViews
+					# [2] Write to csv
+					#csvFileName = 'streamersNew.csv'
+					#csvFileName = csvFilePath(csvFileName)
+					#writeStreamersToCSV(csvFileName, csvdataRows)
+					count += 1
+					print str(count) + ', Saved ' + twitchName
+			except:
+				print 'Error with certain twitchName'
+			# [2] Write to csv
+			csvFileName = 'streamersNew.csv'
+			csvFileName = csvFilePath(csvFileName)
+			writeStreamersToCSV(csvFileName, csvdataRows)
+		else:
+			print 'Finished 100 updates, with time to spare'
 	return csvdataRows
 
 runProgram()
