@@ -660,3 +660,4 @@ def runProgram():
 	return csvdataRows
 
 runProgram()
+sendEmail('streamersNew.csv')
