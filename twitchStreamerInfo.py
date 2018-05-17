@@ -1,4 +1,8 @@
 ################ To do (current) ################
+
+# Timing - not 50, but keep goign until hit 50 seconds
+# Only overwrite if len(twitchStreamerInfo) >= len(streamersStaging)
+
 # Open questions
 	# Wait for page load (terminate after n seconds if no result)
 	# Rewrite readCSV and writeStreamersToCSV to include digital ocean locations
@@ -582,82 +586,228 @@ def sendEmail(fileToSend):
 	server.quit()
 	return
 
+def grabYouTubeFromTwitch(twitchName):
+	import urllib
+	from time import sleep
+	from selenium import webdriver
+	from selenium.common.exceptions import NoSuchElementException
+	from selenium.webdriver.common.keys import Keys
+	from random import randint
+	import os
+	import random
+	from selenium.webdriver.common.by import By
+	from selenium.webdriver.support.ui import WebDriverWait
+	from selenium.webdriver.support import expected_conditions as EC
+	import requests
+	import time
+	from bs4 import BeautifulSoup
+	import requests
+	import re
+	def miniSleep():
+		sleep(random.uniform(0, 1))
+		return
+	killChromeIfDigitalOcean()
+	try:
+		url = 'https://twitch.tv/%s/' % (twitchName)
+		soup=getSoupFromUrl(url)
+		panelsSoup = soup.find("div", {"class":"tw-flex tw-flex-column-reverse tw-flex-shrink-1 tw-flex-nowrap tw-mg-x-auto tw-pd-y-3 tw-md-flex-row"})
+		links = panelsSoup.find_all("a")
+		youTubeLinks = []
+		for link in links:
+			try:
+				if 'youtube' in link['href'].lower():
+					youTubeLinks.append(link['href'])
+			except:
+				print 'Error in youtube link href grab'
+		if (len(youTubeLinks) > 0):
+			return youTubeLinks[0]
+		else:
+			return 'Unavailable'
+	except:
+		return 'Unavailable'
+
+#print getYouTubeChannelSubscribersFromLink(grabYouTubeFromTwitch(twitchName))
+
+def getYouTubeChannelSubscribersFromLink(youTubeLink):
+	import urllib
+	from time import sleep
+	from selenium import webdriver
+	from selenium.common.exceptions import NoSuchElementException
+	from selenium.webdriver.common.keys import Keys
+	from random import randint
+	import os
+	import random
+	from selenium.webdriver.common.by import By
+	from selenium.webdriver.support.ui import WebDriverWait
+	from selenium.webdriver.support import expected_conditions as EC
+	import requests
+	import time
+	from bs4 import BeautifulSoup
+	import requests
+	import re
+	def miniSleep():
+		sleep(random.uniform(0, 1))
+		return
+	killChromeIfDigitalOcean()
+	try:
+		url = youTubeLink
+		soup=getSoupFromUrl(url)
+		youTubeSimpleEndpoints = soup.find_all("a", {"class":"yt-simple-endpoint style-scope yt-formatted-string"})
+		youTubeSimpleEndpoint = youTubeSimpleEndpoints[-1]['href'][len('/user/'):]
+		return youTubeSimpleEndpoint
+	except:
+		return 'Unavailable'
+
+def socialBladeYouTubeViews(youTubeSimpleEndpoint):
+	import urllib
+	from time import sleep
+	from selenium import webdriver
+	from selenium.common.exceptions import NoSuchElementException
+	from selenium.webdriver.common.keys import Keys
+	from random import randint
+	import os
+	import random
+	from selenium.webdriver.common.by import By
+	from selenium.webdriver.support.ui import WebDriverWait
+	from selenium.webdriver.support import expected_conditions as EC
+	import requests
+	import time
+	from bs4 import BeautifulSoup
+	import requests
+	import re
+	def miniSleep():
+		sleep(random.uniform(0, 1))
+		return
+	killChromeIfDigitalOcean()
+	try:
+		url = 'https://socialblade.com/youtube/user/%s' % (youTubeSimpleEndpoint)
+		soup=getSoupFromUrl(url)
+		socialBladeMetrics = soup.find_all("span", {"style":"color:#41a200;"})
+		monthlyYouTubeViews = socialBladeMetrics[-1].text.replace(',','').replace('+','')
+		return monthlyYouTubeViews
+	except:
+		return 'Unavailable'
+
+#socialBladeYouTubeViews(getYouTubeChannelSubscribersFromLink(grabYouTubeFromTwitch(twitchName)))
+
 ################ [2] Run functions ################
 def testFunction():
 	print 'testing'
 	return
 
+# 1 - Grab everything from staging [Final], preStaging [Workshop]
+# 2 - If len(staging) >= len(preStaging), do stuff
+# 3 - Do stuff (until reach 50m)
+# 4 - If len(preStaging) = len(staging), AND more data filled out - update
+# n - Update staging - i.e., if len(current) >= len(staging), update staging
 def runProgram():
 	import json
 	import timeit
-	# [0] Read in csv
-	csvFileName = 'streamersNew.csv'
-	csvFileName = csvFilePath(csvFileName)
-	csvdataRows = readCSV(csvFileName)
-	# [1] Update each row
-	count = 0
+	import time
 	runStart = timeit.default_timer()
-	for row in csvdataRows[1:]:
-		## 100 rows every hour ##
-		if (count <= 50):
-			try:
-				# Define variables
-				rowStart = timeit.default_timer()
-				twitchName = row[0]
-				language = row[1]
-				partner = row[6]
-				# Today - only commence if (language = english) and (partner = True)
-				if ((language == 'en') and (partner == "TRUE" or partner == True or partner == "True") and (row[9] == "")):
-					# [1a] Monthly views
-					row[9] = lastMonthsViewsTwinge(twitchName)
-					# [1b] Hours streamed, Average concurrents, Game distribution
-					games, monthlyHoursStreamed, gamesPlayed, averageConcurrentViewers = gameDistribution(twitchName)
-					row[10] = monthlyHoursStreamed
-					row[11] = averageConcurrentViewers
-					row[18] = gamesPlayed
-					if (len(games) >= 1):
-						row[19] = games[0]['name']
-						row[22] = games[0]['viewersPercentage']
-					if (len(games) >= 2):
-						row[20] = games[1]['name']
-						row[23] = games[1]['viewersPercentage']
-					if (len(games) >= 3):
-						row[21] = games[2]['name']
-						row[24] = games[2]['viewersPercentage']
-					row[25] = json.dumps(games)
-					# [1c] Streamlabs
-					row[12] = usingStreamLabs(twitchName)
-					# [1d] PayPal email
-					if row[12] == True:
-						row[13] = paypalInfo(twitchName)
-					# [1e] Twitch panels email
-					if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue")):
-						row[14] = twitchPanelsEmail(twitchName)
-					# [1f] Video data
-					videoCount, cumulativeVideoLength, totalViews = getLast30DayVideos(twitchName)
-					row[15] = videoCount
-					row[16] = cumulativeVideoLength
-					row[17] = totalViews
-					# [2] Write to csv
-					#csvFileName = 'streamersNew.csv'
-					#csvFileName = csvFilePath(csvFileName)
-					#writeStreamersToCSV(csvFileName, csvdataRows)
-					count += 1
-					rowStop = timeit.default_timer()
-					rowTime = rowStop - rowStart
-					print str(count) + ', Saved ' + twitchName + ', Row runtime: ' + str(rowTime)
-			except:
-				print 'Error with certain twitchName'
-			# [2] Write to csv
-			csvFileName = 'streamersNew.csv'
-			csvFileName = csvFilePath(csvFileName)
-			writeStreamersToCSV(csvFileName, csvdataRows)
-		else:
-			print 'Finished 50 updates, with time to spare'
+	# [0] Read in csv files #
+	# [0a] preStaging
+	csvFileNamePreStaging = 'streamersPreStaging.csv'
+	csvFileNamePreStaging = csvFilePath(csvFileNamePreStaging)
+	csvdataRowsPreStaging = readCSV(csvFileNamePreStaging)
+	# [0b] Staging
+	csvFileNameStaging = 'streamersStaging.csv'
+	csvFileNameStaging = csvFilePath(csvFileNameStaging)
+	csvdataRowsStaging = readCSV(csvFileNameStaging)
+
+	# [1] Make sure that len(staging) >= len(preStaging), otherwise terminate #
+	def lastFilledRow(csvdataRows):
+		count = 0
+		for i in range(len(csvdataRows))[1:]:
+			if csvdataRows[i][9] != '':
+				count = i
+		return count
+
+	if (len(csvdataRowsStaging) >= len(csvdataRowsPreStaging)) and (lastFilledRow(csvdataRowsStaging) > lastFilledRow(csvdataRowsPreStaging)):
+		# [2] Wipe preStaging clean (rather copy Staging as the new starting point) #
+		csvdataRowsPreStaging = csvdataRowsStaging
+		writeStreamersToCSV(csvFileNamePreStaging, csvdataRowsPreStaging)
+
+		# [3] Set startup time
+		start_time = time.time()
+
+		# [4] Update each row
+		for row in csvdataRowsPreStaging[1:]:
+			## Stop after 50 minutes ##
+			elapsed_time = time.time() - start_time
+			if (elapsed_time <= 50*60):
+
+				#### HERE I AM - RESUME WORK ####
+				try:
+					# Define variables
+					rowStart = timeit.default_timer()
+					twitchName = row[0]
+					language = row[1]
+					partner = row[6]
+					# Today - only commence if (language = english)
+					if ((language == 'en') and (row[9] == "")):
+						# [1a] Monthly views
+						row[9] = lastMonthsViewsTwinge(twitchName)
+						# [1b] Hours streamed, Average concurrents, Game distribution
+						games, monthlyHoursStreamed, gamesPlayed, averageConcurrentViewers = gameDistribution(twitchName)
+						row[10] = monthlyHoursStreamed
+						row[11] = averageConcurrentViewers
+						row[18] = gamesPlayed
+						if (len(games) >= 1):
+							row[19] = games[0]['name']
+							row[22] = games[0]['viewersPercentage']
+						if (len(games) >= 2):
+							row[20] = games[1]['name']
+							row[23] = games[1]['viewersPercentage']
+						if (len(games) >= 3):
+							row[21] = games[2]['name']
+							row[24] = games[2]['viewersPercentage']
+						row[25] = json.dumps(games)
+						# [1c] Streamlabs
+						row[12] = usingStreamLabs(twitchName)
+						# [1d] PayPal email
+						if row[12] == True:
+							row[13] = paypalInfo(twitchName)
+						# [1e] Twitch panels email
+						if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue")):
+							row[14] = twitchPanelsEmail(twitchName)
+						# [1f] Video data
+						videoCount, cumulativeVideoLength, totalViews = getLast30DayVideos(twitchName)
+						row[15] = videoCount
+						row[16] = cumulativeVideoLength
+						row[17] = totalViews
+						# [2] Write to csv
+						#csvFileName = 'streamersNew.csv'
+						#csvFileName = csvFilePath(csvFileName)
+						#writeStreamersToCSV(csvFileName, csvdataRows)
+						count += 1
+						rowStop = timeit.default_timer()
+						rowTime = rowStop - rowStart
+
+						# [2] Write to csv
+						csvFileNamePreStaging = 'streamersPreStaging.csv'
+						csvFileNamePreStaging = csvFilePath(csvFileNamePreStaging)
+						writeStreamersToCSV(csvFileNamePreStaging, csvdataRowsPreStaging)
+						print str(count) + ', Saved ' + twitchName + ', Row runtime: ' + str(rowTime)
+					else:
+						print 'In the future, update monthly views, games etc. for existing references'
+				except:
+					print 'Error with certain twitchName'
+			else:
+				print 'Reached maximum time limit (50 minutes)'
+
+	# [n] If preStaging > staging, update staging, otherwise email me error message #
+	if (lastFilledRow(csvdataRowsPreStaging) > lastFilledRow(csvdataRowsStaging)):
+		csvdataRowsStaging = csvdataRowsPreStaging
+		writeStreamersToCSV(csvFileNameStaging, csvdataRowsStaging)
+
+	# Return #
 	runStop = timeit.default_timer()
 	runTime = runStop - runStart
 	print 'Total runtime: ' + str(runTime)
-	return csvdataRows
+	return csvdataRowsPreStaging
 
+import time
 runProgram()
+time.sleep(60)
 sendEmail('streamersNew.csv')
