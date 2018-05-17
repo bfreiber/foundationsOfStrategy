@@ -723,7 +723,7 @@ def runProgram():
 				count = i
 		return count
 
-	if (len(csvdataRowsStaging) >= len(csvdataRowsPreStaging)) and (lastFilledRow(csvdataRowsStaging) > lastFilledRow(csvdataRowsPreStaging)):
+	if (len(csvdataRowsStaging) >= len(csvdataRowsPreStaging)) and (lastFilledRow(csvdataRowsStaging) >= lastFilledRow(csvdataRowsPreStaging)):
 		# [2] Wipe preStaging clean (rather copy Staging as the new starting point) #
 		csvdataRowsPreStaging = csvdataRowsStaging
 		writeStreamersToCSV(csvFileNamePreStaging, csvdataRowsPreStaging)
@@ -810,4 +810,4 @@ def runProgram():
 import time
 runProgram()
 time.sleep(60)
-sendEmail('streamersNew.csv')
+sendEmail('streamersStaging.csv')
