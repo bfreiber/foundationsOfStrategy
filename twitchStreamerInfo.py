@@ -287,17 +287,14 @@ def paypalInfo(twitchName):
 	def miniSleep():
 		sleep(random.uniform(0, 1))
 		return
-
 	# Kill all chrome processes
 	killChromeIfDigitalOcean()
-
 	url = 'https://twitch.streamlabs.com/%s/' % (twitchName)
 	try:
 		driver = startSelenium()
 		miniSleep()
 		driver.get(url)
 		sleep(randint(1,2))#1-5 seconds
-
 		## (3a) Check to see if streamlabs setup exists for twitchName ##
 		if len(driver.find_elements_by_css_selector('.button.button--action.button--lg')) > 0:
 			if driver.find_elements_by_css_selector('.button.button--action.button--lg')[0].text != 'DONATE':
@@ -309,35 +306,28 @@ def paypalInfo(twitchName):
 			driver.quit()
 			print 'Terminated as session streamlabs not set up for twitchName (twitchname doesnt exist?)'
 			return 'Terminated as session streamlabs not set up for twitchName (twitchname doesnt exist?)'
-
 		## (3b) Check minimum donation amount ##
 		donation = 25
-
 		## (3c) Fill in form ##
 		element = driver.find_element_by_name("name")
 		human_type(element, "wambocombo87")
-
 		## 3(d) Check for minimu donation amount ##
 		element = driver.find_element_by_name("amount")
 		human_type(element, str(donation))
-
 		driver.find_element_by_css_selector('.button.button--action.button--lg').click()
 		sleep(3)
-
 		#TERMINATE SESSION#
 		if (driver.find_element_by_css_selector('.button.button--action.button--lg').text == "DONATE"):
 			# TERMINATE SESSION #
 			driver.quit()
 			print 'Terminated because costs too high or other donate related issue'
 			return 'Terminated because costs too high or other donate related issue'
-
 		## (3e) Click on 'submit donation' button ##
 		miniSleep()
 		#driver.find_element_by_css_selector('.button.button--lg.button--action').click()
 		#driver.find_element_by_css_selector('.logo.logo-paypal.logo-paypal-gold').click()
 		driver.find_element_by_css_selector('.button.button--action.button--lg').click()
 		sleep(10)
-
 		## [4] Get email address ##
 		identifyingInformation = ""
 		soup=BeautifulSoup(driver.page_source)
@@ -345,7 +335,6 @@ def paypalInfo(twitchName):
 		for element in potentialElements:
 			if (element.text[:len("Cancel and return to ")] == "Cancel and return to "):
 				identifyingInformation = element.text[len("Cancel and return to "):]
-
 		## Return ##
 		driver.quit()
 		# If is email, return, otherwise return Unavailable
@@ -730,6 +719,7 @@ def runProgram():
 
 		# [3] Set startup time
 		start_time = time.time()
+		count = 0
 
 		# [4] Update each row
 		for row in csvdataRowsPreStaging[1:]:
@@ -737,7 +727,6 @@ def runProgram():
 			elapsed_time = time.time() - start_time
 			if (elapsed_time <= 5*60):
 
-				#### HERE I AM - RESUME WORK ####
 				try:
 					# Define variables
 					rowStart = timeit.default_timer()
@@ -769,7 +758,7 @@ def runProgram():
 						if row[12] == True:
 							row[13] = paypalInfo(twitchName)
 						# [1e] Twitch panels email
-						if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue")):
+						if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue") or (row[13] == "Terminated as session streamlabs not set up for twitchName") or (row[13] == "Terminated as session streamlabs not set up for twitchName (twitchname doesnt exist?)")):
 							row[14] = twitchPanelsEmail(twitchName)
 						# [1f] Video data
 						videoCount, cumulativeVideoLength, totalViews = getLast30DayVideos(twitchName)
@@ -809,5 +798,4 @@ def runProgram():
 
 import time
 runProgram()
-time.sleep(60)
 sendEmail('streamersStaging.csv')
