@@ -786,6 +786,13 @@ def runProgram():
 				print 'Reached maximum time limit (50 minutes)'
 
 	# [n] If preStaging > staging, update staging, otherwise email me error message #
+	time.sleep(60)
+	csvFileNamePreStaging = 'streamersPreStaging.csv'
+	csvFileNamePreStaging = csvFilePath(csvFileNamePreStaging)
+	csvdataRowsPreStaging = readCSV(csvFileNamePreStaging)
+	csvFileNameStaging = 'streamersStaging.csv'
+	csvFileNameStaging = csvFilePath(csvFileNameStaging)
+	csvdataRowsStaging = readCSV(csvFileNameStaging)
 	if (lastFilledRow(csvdataRowsPreStaging) > lastFilledRow(csvdataRowsStaging)):
 		csvdataRowsStaging = csvdataRowsPreStaging
 		writeStreamersToCSV(csvFileNameStaging, csvdataRowsStaging)
