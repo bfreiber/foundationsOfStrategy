@@ -721,17 +721,13 @@ def runProgram():
 		start_time = time.time()
 		count = 0
 
-		print 'step 1'
-
 		# [4] Update each row
 		for row in csvdataRowsPreStaging[1:]:
-			print 'step 2'
 			## Stop after 50 minutes ##
 			elapsed_time = time.time() - start_time
 			if (elapsed_time <= 5*60):
 
 				try:
-					print 'step 3'
 					# Define variables
 					rowStart = timeit.default_timer()
 					twitchName = row[0]
@@ -793,6 +789,8 @@ def runProgram():
 	if (lastFilledRow(csvdataRowsPreStaging) > lastFilledRow(csvdataRowsStaging)):
 		csvdataRowsStaging = csvdataRowsPreStaging
 		writeStreamersToCSV(csvFileNameStaging, csvdataRowsStaging)
+	else:
+		print 'Something is wrong, preStaging is not more advanced than staging'
 
 	# Return #
 	runStop = timeit.default_timer()
