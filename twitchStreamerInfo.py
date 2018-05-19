@@ -726,7 +726,7 @@ def runProgram():
 		for row in csvdataRowsPreStaging[1:]:
 			## Stop after 50 minutes ##
 			elapsed_time = time.time() - start_time
-			if (elapsed_time <= 5*60):
+			if (elapsed_time <= 50*60):
 
 				try:
 					# Define variables
