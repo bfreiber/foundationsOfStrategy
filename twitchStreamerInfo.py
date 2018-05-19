@@ -371,7 +371,8 @@ def twitchPanelsEmail(twitchName):
 	try:
 		url = 'https://twitch.tv/%s/' % (twitchName)
 		soup=getSoupFromUrl(url)
-		panelsSoup = soup.find("div", {"class":"tw-flex tw-flex-column-reverse tw-flex-shrink-1 tw-flex-nowrap tw-mg-x-auto tw-pd-y-3 tw-md-flex-row"})
+		#panelsSoup = soup.find("div", {"class":"tw-flex tw-flex-column-reverse tw-flex-shrink-1 tw-flex-nowrap tw-mg-x-auto tw-pd-y-3 tw-md-flex-row"})
+		panelsSoup = soup.find("div", {"class":"tw-flex tw-flex-column-reverse tw-flex-nowrap tw-flex-shrink-1 tw-md-flex-row tw-mg-x-auto tw-pd-y-3"})
 		panelsSoupString = str(panelsSoup)
 		match = re.findall(r'[\w\.-]+@[\w\.-]+', panelsSoupString)
 		if (len(match) > 0):
@@ -753,10 +754,12 @@ def runProgram():
 							row[24] = games[2]['viewersPercentage']
 						row[25] = json.dumps(games)
 						# [1c] Streamlabs
-						row[12] = usingStreamLabs(twitchName)
-						# [1d] PayPal email
-						if row[12] == True:
-							row[13] = paypalInfo(twitchName)
+						#row[12] = usingStreamLabs(twitchName)
+						row[12] = "N/A"
+						# [1d] PayPal email - no longer works :/
+						#if row[12] == True:
+						#	row[13] = paypalInfo(twitchName)
+						row[13] = ""
 						# [1e] Twitch panels email
 						if ((row[13] == "") or (row[13] == "Unavailable") or (row[13] == "Terminated because costs too high or other donate related issue") or (row[13] == "Terminated as session streamlabs not set up for twitchName") or (row[13] == "Terminated as session streamlabs not set up for twitchName (twitchname doesnt exist?)")):
 							row[14] = twitchPanelsEmail(twitchName)
