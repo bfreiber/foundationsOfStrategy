@@ -450,7 +450,7 @@ def getSoupFromUrl(url):
 	import os
 	import random
 	from pyvirtualdisplay import Display
-	from selenium import webdriver 
+	from selenium import webdriver
 	if platform == 'darwin':
 		chromedriver = "/Users/brandonfreiberg/python-projects/chromedriver"
 		os.environ["webdriver.chrome.driver"] = chromedriver
@@ -480,7 +480,7 @@ def startSelenium():
 	import os
 	import random
 	from pyvirtualdisplay import Display
-	from selenium import webdriver 
+	from selenium import webdriver
 	if platform == 'darwin':
 		chromedriver = "/Users/brandonfreiberg/python-projects/chromedriver"
 		os.environ["webdriver.chrome.driver"] = chromedriver
@@ -704,6 +704,19 @@ def runProgram():
 	csvFileNameStaging = 'streamersStaging.csv'
 	csvFileNameStaging = csvFilePath(csvFileNameStaging)
 	csvdataRowsStaging = readCSV(csvFileNameStaging)
+
+	# [0.5] Make sure that each row in preStaging is at least len(n), else find_element_by_name
+	def removeShortenedRows(csvdataRows):
+		csvdataRowsNew = []
+		for row in csvdataRows:
+			if (len(row) >= 26):
+				csvdataRowsNew.append(row)
+		return csvdataRowsNew
+	# If new is shorter than original, overwrite original
+	csvdataRowsNew = removeShortenedRows(csvdataRowsPreStaging):
+	if (len(csvdataRowsNew) < len(csvdataRowsPreStaging)):
+		writeStreamersToCSV(csvFileNamePreStaging, csvdataRowsNew)
+		csvdataRowsPreStaging = readCSV(csvFileNamePreStaging)
 
 	# [1] Make sure that len(staging) >= len(preStaging), otherwise terminate #
 	def lastFilledRow(csvdataRows):
