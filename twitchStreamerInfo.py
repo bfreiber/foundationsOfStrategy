@@ -713,7 +713,7 @@ def runProgram():
 				csvdataRowsNew.append(row)
 		return csvdataRowsNew
 	# If new is shorter than original, overwrite original
-	csvdataRowsNew = removeShortenedRows(csvdataRowsPreStaging):
+	csvdataRowsNew = removeShortenedRows(csvdataRowsPreStaging)
 	if (len(csvdataRowsNew) < len(csvdataRowsPreStaging)):
 		writeStreamersToCSV(csvFileNamePreStaging, csvdataRowsNew)
 		csvdataRowsPreStaging = readCSV(csvFileNamePreStaging)
