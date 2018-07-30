@@ -41,7 +41,7 @@ def grabTwitchStreamers(minimumFollowers):
 	r = requests.get(url)
 	jsonObject = r.json()
 	for stream in jsonObject['streams']:
-		if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] == 'en'):
+		if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] in ['en', 'es', 'fr', 'de', 'pt', 'it']):
 			streamers.append(stream)
 	print len(streamers)
 	total = jsonObject['_total']
@@ -56,7 +56,7 @@ def grabTwitchStreamers(minimumFollowers):
 		jsonObject = r.json()
 		try:
 			for stream in jsonObject['streams']:
-				if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] == 'en'):
+				if (stream['channel']['followers'] > minimumFollowers) and (stream['channel']['language'] in ['en', 'es', 'fr', 'de', 'pt', 'it']):
 					streamers.append(stream)
 		except:
 			print "Error with jsonObject['streams']"
@@ -95,4 +95,4 @@ def grabTwitchStreamers(minimumFollowers):
 
 ################ Run ################
 
-grabTwitchStreamers(1000)
+grabTwitchStreamers(500)
